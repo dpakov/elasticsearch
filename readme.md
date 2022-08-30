@@ -61,3 +61,102 @@ GET localhost:9200/dqn_index/_search?q=*:*
 ```
 DELETE localhost:9200/dqn_index/_doc/1
 ```
+
+## Roles and Privileges
+First, you need to enable ``xpack.security.enabled: true`` from **/usr/share/elasticsearch/config/elasticsearch.yml**
+
+Configure user and password:
+```
+ELASTIC_USERNAME=elastic
+ELASTIC_PASSWORD=elastic
+```
+
+After that all above request must be sent with --user data or base64 (USER:PASSWORD) with header authorization.
+
+### Create Privilege
+```
+POST localhost:9200/_security/privilege
+--header 'Authorization: Basic ZWxhc3RpYzplbGFzdGlj'
+--data-raw '{
+  "app02": {
+    "all": {
+      "actions": [ "*" ]
+    }
+  }
+}'
+```
+
+This request can be used for update also. If you create a privilege, response looks like:
+
+```
+{
+    "app02": {
+        "all": {
+            "created": true
+        }
+    }
+}
+```
+
+If you run again, you will update it and response will be ```"created": false```.
+
+### Create Role
+Documentation - https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-put-role.html
+```
+PUT localhost:9200/_security/role/<role_name>
+-d '{
+  "cluster": ["all"],
+  "indices": [
+    {
+      "names": [ "*" ],
+      "privileges": ["all"]
+    }
+  ]
+}'
+```
+
+### Get Role
+
+```
+GET localhost:9200/_security/role/<role_name>
+```
+
+### Create User
+```
+PUT localhost:9200/_security/user/<username>
+{
+  "password" : "123456",
+  "roles" : [ "admin_role", "other_role1" ],
+  "full_name" : "Deyan Deyanov",
+  "email" : "deyan@pakov.com"
+}
+```
+
+### Get User
+```
+GET localhost:9200/_security/user/<username>
+```
+
+Response:
+
+```
+{
+    "dpakov": {
+        "username": "dpakov",
+        "roles": [
+            "admin_role",
+            "other_role1"
+        ],
+        "full_name": "Deyan Deyanov",
+        "email": "deyan@pakov.com",
+        "metadata": {},
+        "enabled": true
+    }
+}
+```
+
+Or for all users:
+
+```
+GET localhost:9200/_security/user
+```
