@@ -10,13 +10,13 @@ PUT localhost:9200/dqn_index
 ### Create Index Mapping
 ```
 PUT localhost:9200/dqn_index/_mapping
--d '{
+{
     "properties": {
         "name": {
             "type": "text"
         }
     }
-}'
+}
 ```
 
 Field types - https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html
@@ -41,10 +41,10 @@ GET http://localhost:9200/_mapping
 ### Create Document
 Create document for index 'dqn_index' with manually chose id 1. If you execute without last parameter, id will be generated automatically.
 ```
-curl POST localhost:9200/dqn_index/_doc/1
--d '{
+POST localhost:9200/dqn_index/_doc/1
+{
     "name": "Dqn Dqnov"
-}'
+}
 ```
 
 ### Get Document by ID
@@ -77,13 +77,13 @@ After that all above request must be sent with --user data or base64 (USER:PASSW
 ```
 POST localhost:9200/_security/privilege
 --header 'Authorization: Basic ZWxhc3RpYzplbGFzdGlj'
---data-raw '{
+{
   "app02": {
     "all": {
       "actions": [ "*" ]
     }
   }
-}'
+}
 ```
 
 This request can be used for update also. If you create a privilege, response looks like:
@@ -104,7 +104,7 @@ If you run again, you will update it and response will be ```"created": false```
 Documentation - https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-put-role.html
 ```
 PUT localhost:9200/_security/role/<role_name>
--d '{
+{
   "cluster": ["all"],
   "indices": [
     {
@@ -112,7 +112,7 @@ PUT localhost:9200/_security/role/<role_name>
       "privileges": ["all"]
     }
   ]
-}'
+}
 ```
 
 ### Get Role
